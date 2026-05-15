@@ -1,0 +1,200 @@
+{% extends "base.html" %}{% block title %}Consult Dietitian — NutriEase{% endblock %}
+{% block body %}
+<style>
+  /* Messenger UI Styles */
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevent body scroll, handle scroll in chat area */
+  }
+  .site-header {
+    flex-shrink: 0;
+  }
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    height: calc(100vh - 70px); /* Adjust based on header height */
+  }
+  .chat-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .chat-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .chat-header p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--green);
+  }
+  .chat-messages {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* Latest at bottom */
+  }
+  .message-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+  .message-bubble {
+    max-width: 75%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    position: relative;
+    word-wrap: break-word;
+  }
+  .message-user {
+    align-self: flex-end;
+    background: var(--green);
+    color: #fff;
+    border-bottom-right-radius: 2px;
+  }
+  .message-dietitian {
+    align-self: flex-start;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 2px;
+    margin-top: 0.5rem; /* Space between question and answer */
+  }
+  .message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+    text-align: right;
+  }
+  .message-time.left {
+    text-align: left;
+  }
+  .chat-input-area {
+    padding: 1rem 1.5rem;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .chat-form {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .chat-form textarea {
+    flex-grow: 1;
+    border-radius: 20px;
+    padding: 0.75rem 1.25rem;
+    resize: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    height: 50px;
+    line-height: 1.5;
+  }
+  .chat-form textarea:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .chat-form button {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  /* Hide standard footer on this page to maximize chat space */
+  .site-footer {
+    display: none;
+  }
+</style>
+
+<div class="chat-container">
+  <div class="chat-header">
+    <div>
+      <h2>Consult a Dietitian</h2>
+      <p><i class="ph-fill ph-check-circle"></i> Online • Usually replies within 24 hours</p>
+    </div>
+  </div>
+
+  <div class="chat-messages">
+    <!-- Messages are rendered in reverse order due to flex-direction: column-reverse -->
+    {% if not queries %}
+      <div style="text-align:center; color:var(--text-muted); margin:auto;">
+        <i class="ph ph-hand-waving" style="font-size:3rem; opacity:0.5"></i>
+        <p>Send a message to start consulting with our dietitians.</p>
+      </div>
+    {% else %}
+      {% for q in queries %}
+        <!-- Entire Q&A Block -->
+        <div class="message-wrapper">
+          
+          <!-- User Question -->
+          <div class="message-bubble message-user">
+            <div class="message-content">{{ q.message }}</div>
+            <div class="message-time">{{ q.created_at.strftime('%d %b, %H:%M') }}</div>
+          </div>
+
+          <!-- Dietitian Reply -->
+          {% if q.reply %}
+          <div class="message-bubble message-dietitian">
+            <strong style="color:var(--green); font-size:0.85rem; display:block; margin-bottom:0.25rem;">NutriEase Dietitian</strong>
+            <div class="message-content">{{ q.reply }}</div>
+            <div class="message-time left">{{ q.replied_at.strftime('%d %b, %H:%M') if q.replied_at else 'Answered' }}</div>
+          </div>
+          {% else %}
+          <div class="message-bubble message-dietitian" style="opacity: 0.6;">
+            <div class="message-content"><em>Waiting for dietitian's response...</em></div>
+          </div>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="chat-input-area">
+    <form method="post" class="chat-form">
+      <textarea name="message" placeholder="Type a message..." required></textarea>
+      <button type="submit" class="btn primary" title="Send">
+        <i class="ph-fill ph-paper-plane-right" style="font-size:1.25rem;"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Auto-resize textarea
+  const tx = document.querySelector('textarea');
+  tx.setAttribute('style', 'height:' + (tx.scrollHeight) + 'px;overflow-y:hidden;');
+  tx.addEventListener("input", OnInput, false);
+  function OnInput() {
+    this.style.height = '50px'; // Reset
+    this.style.height = (this.scrollHeight) + 'px';
+  }
+  
+  // Submit on Enter (without shift)
+  tx.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if(this.value.trim() !== '') {
+        this.closest('form').submit();
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}{% block title %}Diet plan — NutriEase{% endblock %}
+{% block body %}
+<section class="container">
+<h1>Generate your diet plan</h1>
+<form method="post" class="card">
+  <div class="row-2">
+    <label>Age<input type="number" name="age" value="{{ profile.age if profile else '' }}" required></label>
+    <label>Gender<select name="gender">
+      {% for g in ['male','female','other'] %}<option value="{{g}}" {% if profile and profile.gender==g %}selected{% endif %}>{{g.title()}}</option>{% endfor %}
+    </select></label>
+    <label>Height (cm)<input type="number" step="0.1" name="height_cm" value="{{ profile.height_cm if profile else '' }}" required></label>
+    <label>Weight (kg)<input type="number" step="0.1" name="weight_kg" value="{{ profile.weight_kg if profile else '' }}" required></label>
+    <label>Activity<select name="activity_level">
+      {% for a in ['sedentary','light','moderate','active','athlete'] %}<option value="{{a}}" {% if profile and profile.activity_level==a %}selected{% endif %}>{{a.title()}}</option>{% endfor %}
+    </select></label>
+    <label>Goal<select name="goal">
+      {% for a in ['weight_loss','muscle_gain','maintain','endurance','recovery'] %}<option value="{{a}}" {% if profile and profile.goal==a %}selected{% endif %}>{{a.replace('_',' ').title()}}</option>{% endfor %}
+    </select></label>
+    <label>Diet preference<select name="diet_preference">
+      {% for a in ['non-vegetarian','vegetarian','vegan'] %}<option value="{{a}}" {% if profile and profile.diet_preference==a %}selected{% endif %}>{{a.title()}}</option>{% endfor %}
+    </select></label>
+    <label>Region<select name="diet_region">
+      {% for a in ['global','indian'] %}<option value="{{a}}">{{a.title()}}</option>{% endfor %}
+    </select></label>
+    <label>Budget<select name="budget">
+      {% for a in ['low','medium','high'] %}<option value="{{a}}" {% if a=='medium' %}selected{% endif %}>{{a.title()}}</option>{% endfor %}
+    </select></label>
+    <label>Known deficiencies<input name="deficiencies" value="{{ profile.deficiencies if profile else '' }}" placeholder="iron, vitamin D"></label>
+  </div>
+  <button class="btn primary big" type="submit">Generate plan</button>
+</form>
+
+{% if plan %}
+<div class="card plan">
+  <div class="plan-head">
+    <div><h2>{{ plan.title }}</h2><p class="muted">{{ plan.summary }}</p></div>
+    <a class="btn primary" href="{{ url_for('plan_pdf', plan_id=plan_id) }}">⬇ Export as PDF</a>
+  </div>
+  <div class="macros">
+    <div><strong>{{ plan.daily_calories }}</strong><span>kcal/day</span></div>
+    <div><strong>{{ plan.macros.protein_g }}g</strong><span>protein</span></div>
+    <div><strong>{{ plan.macros.carbs_g }}g</strong><span>carbs</span></div>
+    <div><strong>{{ plan.macros.fats_g }}g</strong><span>fats</span></div>
+    <div><strong>{{ plan.hydration_liters }}L</strong><span>water</span></div>
+  </div>
+  <h3>Supplements</h3><ul>{% for s in plan.supplements %}<li>{{ s }}</li>{% endfor %}</ul>
+  <h3>Tips</h3><ul>{% for s in plan.tips %}<li>{{ s }}</li>{% endfor %}</ul>
+  <h3>7-day plan</h3>
+  {% for day in plan.days %}
+  <div class="day">
+    <h4>{{ day.day }}</h4>
+    <table>
+      <tr><th>Meal</th><th>Items</th><th>kcal</th></tr>
+      {% for m in day.meals %}<tr><td>{{ m.name }}</td><td>{{ m['items']|join('; ') }}</td><td>{{ m.calories }}</td></tr>{% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+</section>{% endblock %}

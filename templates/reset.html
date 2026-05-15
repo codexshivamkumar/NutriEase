@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Set new password — NutriEase{% endblock %}
+{% block body %}
+<section class="container narrow" style="padding:3rem 1.25rem">
+  <div class="card">
+    <h1>Set new password</h1>
+    <form method="post">
+      <label>Email<input type="email" name="email" value="{{ email }}" required></label>
+      <label>6-digit OTP<input type="text" name="code" maxlength="6" required></label>
+      <label>New password<input type="password" name="password" minlength="6" required></label>
+      <button class="btn primary big block" type="submit">Update password</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

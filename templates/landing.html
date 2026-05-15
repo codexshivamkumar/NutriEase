@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block body %}
+<section class="hero fade-in">
+  <div class="container">
+    <span class="pill">Your conversational nutrition coach</span>
+    <h1>Eat smarter.<br><span class="grad">Train better.</span><br>Live longer.</h1>
+    <p class="lead">NutriEase talks to you like a real dietitian — asks the right questions, calculates your BMI and calories, and builds a personalised diet & workout plan you can download as a PDF.</p>
+    <div class="cta">
+      <a class="btn primary big" href="{{ url_for('auth') }}">Start Now — it's free</a>
+      <a class="btn outline big" href="{{ url_for('chat') }}"><i class="ph ph-chat-circle-dots" style="vertical-align:middle;margin-right:4px"></i>Try the Chatbot</a>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="container features fade-in">
+  <h2>Everything you need in one place.</h2>
+  <div class="grid-4">
+    <div class="card"><i class="ph ph-chat-centered-text" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>Doctor-style chat</h3><p class="muted">A conversational coach that asks about your goals, conditions and lifestyle — then recommends.</p></div>
+    <div class="card"><i class="ph ph-calculator" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>BMI & calories</h3><p class="muted">Mifflin-St Jeor BMR with activity multipliers and macro splits tuned to your goal.</p></div>
+    <div class="card"><i class="ph ph-calendar-check" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>Diet & workout plans</h3><p class="muted">7-day meal plans plus beginner-to-advanced workout routines, instantly.</p></div>
+    <div class="card"><i class="ph ph-file-pdf" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>Export as PDF</h3><p class="muted">Take any plan offline as a polished, printable PDF.</p></div>
+  </div>
+</section>
+
+<section class="container how fade-in">
+  <h2>How it works</h2>
+  <div class="grid-3">
+    <div class="card"><i class="ph ph-user-circle" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>01 · Tell us about you</h3><p class="muted">Age, weight, goal, activity, dietary preference and any health conditions.</p></div>
+    <div class="card"><i class="ph ph-list-checks" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>02 · Get your plan</h3><p class="muted">A clean dashboard with BMI, daily calories, meals, workouts and supplements.</p></div>
+    <div class="card"><i class="ph ph-trend-up" style="font-size:2.5rem;color:var(--green);margin-bottom:1rem;display:block"></i><h3>03 · Track progress</h3><p class="muted">Log weight, save plans, set reminders for meals and workouts.</p></div>
+  </div>
+</section>
+
+<section class="container reviews fade-in">
+  <h2>Loved by our users</h2>
+  <div class="reviews-slider-container">
+    <button class="slider-btn left" onclick="document.querySelector('.reviews-wrap').scrollBy({left: -320, behavior: 'smooth'})">&#10094;</button>
+    <div class="reviews-wrap">
+      <div class="card">
+        <div style="color:var(--green);margin-bottom:.5rem">★★★★★</div>
+        <p class="muted">"I was struggling with my PCOS diet, but NutriEase made it so simple. The personalized plans are exactly what I needed!"</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem">
+          <h4 style="margin:0;color:var(--fg)">Priya S.</h4>
+          <span style="background:#dcfce7;color:#166534;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:600">Reversed PCOS</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="color:var(--green);margin-bottom:.5rem">★★★★★</div>
+        <p class="muted">"The PDF exports are brilliant. I just print my 7-day meal plan and stick it on the fridge. Best nutrition app out there."</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem">
+          <h4 style="margin:0;color:var(--fg)">Rahul M.</h4>
+          <span style="background:#dcfce7;color:#166534;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:600">Lost 8kg</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="color:var(--green);margin-bottom:.5rem">★★★★★</div>
+        <p class="muted">"Finally, an app that actually listens to your health conditions! The hypertension-friendly diet has been a game-changer."</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem">
+          <h4 style="margin:0;color:var(--fg)">Anjali K.</h4>
+          <span style="background:#dcfce7;color:#166534;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:600">Lowered BP</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="color:var(--green);margin-bottom:.5rem">★★★★★</div>
+        <p class="muted">"I love the doctor portal! Being able to ask specific questions and get real advice makes it feel so premium."</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem">
+          <h4 style="margin:0;color:var(--fg)">Vikram D.</h4>
+          <span style="background:#dcfce7;color:#166534;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:600">Lost 5kg</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="color:var(--green);margin-bottom:.5rem">★★★★★</div>
+        <p class="muted">"NutriEase helped me gain 4kg of muscle safely. The BMR calculator and macro breakdown are perfectly tuned."</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem">
+          <h4 style="margin:0;color:var(--fg)">Neha G.</h4>
+          <span style="background:#dcfce7;color:#166534;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:999px;font-weight:600">Gained 4kg Muscle</span>
+        </div>
+      </div>
+    </div>
+    <button class="slider-btn right" onclick="document.querySelector('.reviews-wrap').scrollBy({left: 320, behavior: 'smooth'})">&#10095;</button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  });
+</script>
+{% endblock %}

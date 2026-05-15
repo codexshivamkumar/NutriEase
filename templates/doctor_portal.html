@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% block title %}Doctor Portal — NutriEase{% endblock %}
+{% block body %}
+<section class="container" style="padding:2rem 1.25rem">
+  <span class="pill">Doctor Portal</span>
+  <h1>Patient Queries</h1>
+
+  <h2>Pending Questions</h2>
+  <div class="list" style="margin-bottom:4rem">
+    {% for q in pending %}
+    <div class="card" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+        <strong style="color:var(--green)">User ID: {{ q.user_id }}</strong>
+        <span class="muted" style="font-size:0.85rem">{{ q.created_at.strftime('%d %b %Y, %H:%M') }}</span>
+      </div>
+      <div style="background:var(--bg2);padding:1rem;border-radius:8px;margin-bottom:1rem">
+        <p style="margin:0">{{ q.message }}</p>
+      </div>
+      <form method="post">
+        <input type="hidden" name="query_id" value="{{ q.id }}">
+        <textarea name="reply" rows="3" placeholder="Type your reply here..." required></textarea>
+        <button class="btn primary" type="submit" style="margin-top:1rem">Submit Reply</button>
+      </form>
+    </div>
+    {% endfor %}
+    {% if not pending %}
+      <p class="muted">There are no pending queries right now. Good job!</p>
+    {% endif %}
+  </div>
+
+  <h2>Recently Answered</h2>
+  <div class="list">
+    {% for q in answered %}
+    <div class="card" style="margin-bottom:1rem;opacity:0.8">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+        <span><strong class="muted">User ID: {{ q.user_id }}</strong></span>
+        <span class="muted" style="font-size:0.85rem">{{ q.replied_at.strftime('%d %b %Y, %H:%M') }}</span>
+      </div>
+      <p style="margin:0.5rem 0;color:var(--muted)">Q: {{ q.message }}</p>
+      <p style="margin:0.5rem 0;color:var(--green)">A: {{ q.reply }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

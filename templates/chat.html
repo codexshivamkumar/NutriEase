@@ -1,0 +1,90 @@
+{% extends "base.html" %}{% block title %}Chat — NutriEase{% endblock %}
+{% block body %}
+<section class="container chat-wrap">
+  <aside class="chat-side">
+    {% if current_user.is_authenticated %}
+    <a class="btn primary block" href="{{ url_for('chat_new') }}">+ New consultation</a>
+    <h4>History</h4>
+    <ul class="convs">
+      {% for c in convs %}<li><a href="{{ url_for('chat', conv=c.id) }}">{{ c.title or 'Conversation' }}</a></li>{% endfor %}
+      {% if not convs %}<li class="muted" style="padding:.5rem .7rem">No conversations yet.</li>{% endif %}
+    </ul>
+    {% else %}
+    <p class="muted">Sign in to save your conversation history and personalise replies.</p>
+    <a class="btn primary block" href="{{ url_for('auth') }}">Sign in</a>
+    {% endif %}
+  </aside>
+
+  <div class="chat-main">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:.5rem;margin-bottom:.5rem;padding:0 2rem">
+      <div>
+        <h3 style="margin:0">NutriEase coach</h3>
+        <small class="muted">Trained on 100,000+ nutrition & fitness conversations</small>
+      </div>
+      <span class="pill">Online</span>
+    </div>
+    <div class="messages" id="messages">
+      {% if not conv %}
+      <div class="msg-row assistant-row">
+        <div class="msg-avatar">NE</div>
+        <div class="msg assistant">Hello! I'm your NutriEase coach. Sign in and start a new consultation — I'll ask a few questions like a real dietitian and put together a plan for you. You can also ask me anything about food, training or supplements.</div>
+      </div>
+      {% else %}
+        {% for m in conv.messages %}
+          {% if m.role == 'assistant' %}
+            <div class="msg-row assistant-row">
+              <div class="msg-avatar">NE</div>
+              <div class="msg assistant">{{ m.content }}</div>
+            </div>
+          {% else %}
+            <div class="msg-row user-row">
+              <div class="msg user">{{ m.content }}</div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="chat-form-wrap">
+      <form method="post" class="chat-form" id="chatForm">
+        <textarea name="message" id="msgBox" rows="1" placeholder="Type your message…" required {% if not current_user.is_authenticated %}disabled{% endif %} oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+        <button class="btn primary" type="submit" aria-label="Send" {% if not current_user.is_authenticated %}disabled{% endif %}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+<script>
+  // Auto-scroll messages to the bottom.
+  const m = document.getElementById('messages');
+  if (m) m.scrollTop = m.scrollHeight;
+
+  // Typing indicator on submit.
+  const form = document.getElementById('chatForm');
+  if (form) form.addEventListener('submit', () => {
+    const box = document.getElementById('msgBox');
+    const text = box.value.trim();
+    if (!text) return;
+    const uRow = document.createElement('div'); uRow.className='msg-row user-row';
+    const uMsg = document.createElement('div'); uMsg.className='msg user'; uMsg.textContent=text;
+    uRow.appendChild(uMsg);
+    m.appendChild(uRow);
+
+    const tRow = document.createElement('div'); tRow.className='msg-row assistant-row';
+    const tAv = document.createElement('div'); tAv.className='msg-avatar'; tAv.textContent='NE';
+    const tTyping = document.createElement('div'); tTyping.className='typing';
+    tTyping.innerHTML='Coach is typing<span>.</span><span>.</span><span>.</span>';
+    tRow.appendChild(tAv); tRow.appendChild(tTyping);
+    m.appendChild(tRow); 
+    
+    m.scrollTop = m.scrollHeight;
+    box.style.height = '';
+  });
+
+  // Submit on Enter (Shift+Enter for newline).
+  const box = document.getElementById('msgBox');
+  if (box) box.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+  });
+</script>
+{% endblock %}

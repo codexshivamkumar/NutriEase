@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Forgot password — NutriEase{% endblock %}
+{% block body %}
+<section class="container narrow" style="padding:3rem 1.25rem">
+  <div class="card">
+    <h1>Reset your password</h1>
+    <p class="muted">Enter the email associated with your NutriEase account. We'll send a 6-digit OTP.</p>
+    <form method="post">
+      <label>Email<input type="email" name="email" required></label>
+      <button class="btn primary big block" type="submit">Send OTP</button>
+    </form>
+    <p class="muted" style="margin-top:1rem;font-size:.85rem">Demo mode: the OTP is printed to the server console.</p>
+  </div>
+</section>
+{% endblock %}

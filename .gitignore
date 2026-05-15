@@ -1,0 +1,27 @@
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite
+*.db
+instance/
+.env
+.vscode/
+*.log
+coverage/
+htmlcov/
+dist/
+build/
+pip-wheel-metadata/
+*.egg-info/
+/.eggs/
+Thumbs.db
+.DS_Store
+
+# Ignore data/model artifacts by default (use Git LFS if you need to track them)
+data/
+
+# Node / front-end
+node_modules/

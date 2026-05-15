@@ -1,0 +1,88 @@
+{% extends "base.html" %}{% block title %}Dashboard — NutriEase{% endblock %}
+{% block body %}
+<section class="container" style="padding:2rem 1.25rem">
+  <h1>Welcome back{% if current_user.full_name %}, {{ current_user.full_name }}{% endif %}.</h1>
+  <p class="muted">Here is your snapshot.</p>
+
+  {% if summary %}
+  <div class="macros">
+    <div><i class="ph ph-scales" style="display:block;color:var(--green);font-size:1.5rem;margin:0 auto .5rem"></i><strong>{{ summary.bmi }}</strong><span>BMI</span></div>
+    <div><i class="ph ph-heartbeat" style="display:block;color:var(--green);font-size:1.5rem;margin:0 auto .5rem"></i><strong>{{ summary.category }}</strong><span>Category</span></div>
+    <div><i class="ph ph-fire" style="display:block;color:var(--green);font-size:1.5rem;margin:0 auto .5rem"></i><strong>{{ summary.calories }}</strong><span>Daily kcal</span></div>
+    <div><i class="ph ph-barbell" style="display:block;color:var(--green);font-size:1.5rem;margin:0 auto .5rem"></i><strong>{{ (summary.calories*0.30/4)|int }} g</strong><span>Protein</span></div>
+    <div><i class="ph ph-bowl-food" style="display:block;color:var(--green);font-size:1.5rem;margin:0 auto .5rem"></i><strong>{{ (summary.calories*0.45/4)|int }} g</strong><span>Carbs</span></div>
+  </div>
+  {% else %}
+  <div class="card"><p>Tell us a bit about yourself in the <a href="{{ url_for('chat_new') }}">chat</a> or your <a href="{{ url_for('profile') }}">profile</a> so we can compute your BMI and calorie target.</p></div>
+  {% endif %}
+
+  <div class="grid-3">
+    <a class="card link" href="{{ url_for('chat_new') }}"><i class="ph ph-chat-text" style="font-size:2rem;color:var(--green);margin-bottom:.5rem;display:block"></i><h3>Start a consultation</h3><p class="muted">Talk to your NutriEase coach.</p></a>
+    <a class="card link" href="{{ url_for('plan_page') }}"><i class="ph ph-carrot" style="font-size:2rem;color:var(--green);margin-bottom:.5rem;display:block"></i><h3>Generate a diet plan</h3><p class="muted">7-day meals + macros.</p></a>
+    <a class="card link" href="{{ url_for('deficiency') }}"><i class="ph ph-warning-circle" style="font-size:2rem;color:var(--green);margin-bottom:.5rem;display:block"></i><h3>Deficiency analyzer</h3><p class="muted">Symptoms → likely gaps.</p></a>
+  </div>
+
+  <h2>Track your weight</h2>
+  <div class="grid-2">
+    <div class="card">
+      <form method="post" action="{{ url_for('log_weight') }}">
+        <label>Today's weight (kg)<input type="number" step="0.1" name="weight_kg" required></label>
+        <label>Note (optional)<input type="text" name="note" placeholder="e.g. morning, fasted"></label>
+        <button class="btn primary block" type="submit">Log weight</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Recent entries</h3>
+      {% if weights %}
+      <table>
+        <tr><th>Date</th><th>Weight</th><th>Note</th></tr>
+        {% for w in weights %}
+        <tr><td>{{ w.logged_at.strftime('%d %b %Y') }}</td><td>{{ w.weight_kg }} kg</td><td>{{ w.note }}</td></tr>
+        {% endfor %}
+      </table>
+      {% else %}<p class="muted">No entries yet.</p>{% endif %}
+    </div>
+  </div>
+
+  <h2>Reminders</h2>
+  <div class="grid-2">
+    <div class="card">
+      <form method="post" action="{{ url_for('add_reminder') }}">
+        <div class="row-2">
+          <label>Type
+            <select name="kind"><option value="meal">Meal</option><option value="workout">Workout</option><option value="water">Water</option></select>
+          </label>
+          <label>Time<input type="time" name="time_of_day" value="08:00"></label>
+        </div>
+        <label>Title<input type="text" name="title" placeholder="e.g. Breakfast" required></label>
+        <button class="btn primary block" type="submit">Add reminder</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Active reminders</h3>
+      {% if reminders %}
+        {% for r in reminders %}
+        <div class="row">
+          <div><strong>{{ r.title }}</strong><br><small class="muted">{{ r.kind|capitalize }} · {{ r.time_of_day }}</small></div>
+          <form method="post" action="{{ url_for('delete_reminder', rid=r.id) }}"><button class="btn ghost" type="submit">Remove</button></form>
+        </div>
+        {% endfor %}
+      {% else %}<p class="muted">No reminders set.</p>{% endif %}
+    </div>
+  </div>
+
+  <h2>Recent diet plans</h2>
+  {% if plans %}
+  <div class="list">
+    {% for p in plans %}
+    <div class="row">
+      <div><strong>{{ p.title }}</strong><br><small class="muted">{{ p.created_at.strftime('%d %b %Y') }} · {{ p.calories }} kcal</small></div>
+      <a class="btn outline" href="{{ url_for('plan_pdf', plan_id=p.id) }}">Download PDF</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card"><p>No plans yet. <a href="{{ url_for('plan_page') }}">Generate your first one.</a></p></div>
+  {% endif %}
+</section>
+{% endblock %}

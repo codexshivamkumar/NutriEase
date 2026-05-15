@@ -1,0 +1,50 @@
+{% extends "base.html" %}{% block title %}Admin — NutriEase{% endblock %}
+{% block body %}
+<section class="container" style="padding:2rem 1.25rem">
+  <span class="pill">Admin</span>
+  <h1>Control panel</h1>
+  <div class="macros">
+    <div><strong>{{ stats.users }}</strong><span>Users</span></div>
+    <div><strong>{{ stats.plans }}</strong><span>Diet plans</span></div>
+    <div><strong>{{ stats.conversations }}</strong><span>Conversations</span></div>
+    <div><strong>{{ stats.messages }}</strong><span>Messages</span></div>
+    <div><strong>OK</strong><span>Status</span></div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 1rem;">
+    <h2 style="margin:0;">Users & Dietitians</h2>
+    <div class="card" style="padding: 1rem; margin: 0; min-width: 350px;">
+      <h3 style="margin-top:0;">Create Dietitian Account</h3>
+      <form method="post" action="{{ url_for('admin_create_doctor') }}" style="display:flex; flex-direction:column; gap:0.5rem;">
+        <input type="text" name="name" placeholder="Full Name" required />
+        <input type="email" name="email" placeholder="Email Address" required />
+        <input type="password" name="password" placeholder="Temporary Password" required />
+        <button class="btn primary" type="submit">Create Dietitian</button>
+      </form>
+    </div>
+  </div>
+  <div class="card" style="overflow:auto">
+    <table>
+      <tr><th>ID</th><th>Email</th><th>Name</th><th>Admin</th><th>Doctor</th><th>Joined</th><th>Last login</th><th></th></tr>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.full_name or '-' }}</td>
+        <td>{{ 'yes' if u.is_admin else 'no' }}</td>
+        <td>{{ 'yes' if u.is_doctor else 'no' }}</td>
+        <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td>{{ u.last_login.strftime('%d %b %Y') if u.last_login else '-' }}</td>
+        <td>
+          {% if u.id != current_user.id %}
+          <form method="post" action="{{ url_for('admin_toggle', uid=u.id) }}" style="display:inline"><button class="btn ghost" type="submit">Toggle admin</button></form>
+          <form method="post" action="{{ url_for('admin_toggle_doctor', uid=u.id) }}" style="display:inline"><button class="btn ghost" type="submit">Toggle doctor</button></form>
+          <form method="post" action="{{ url_for('admin_delete', uid=u.id) }}" style="display:inline" onsubmit="return confirm('Delete this user?')"><button class="btn ghost" type="submit" style="color:#f87171">Delete</button></form>
+          {% else %}<small class="muted">you</small>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}

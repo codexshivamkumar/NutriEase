@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}History — NutriEase{% endblock %}
+{% block body %}
+<section class="container">
+<h1>History</h1>
+<h2>Diet plans</h2>
+{% if not plans %}<p class="muted">No plans yet.</p>{% endif %}
+<div class="list">
+{% for p in plans %}<div class="row"><div><strong>{{ p.title }}</strong><br><small class="muted">{{ p.created_at.strftime('%Y-%m-%d %H:%M') }} · {{ p.calories }} kcal · {{ p.goal }}</small></div>
+<a class="btn outline" href="{{ url_for('plan_pdf', plan_id=p.id) }}">PDF</a></div>{% endfor %}
+</div>
+
+<h2>Deficiency reports</h2>
+{% if not reports %}<p class="muted">No reports yet.</p>{% endif %}
+<div class="list">{% for r in reports %}<div class="row"><div><strong>{{ r.symptoms[:80] }}</strong><br><small class="muted">{{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</small></div></div>{% endfor %}</div>
+
+<h2>Conversations</h2>
+{% if not convs %}<p class="muted">No conversations yet.</p>{% endif %}
+<div class="list">{% for c in convs %}<div class="row"><div><strong>{{ c.title }}</strong><br><small class="muted">{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</small></div>
+<a class="btn outline" href="{{ url_for('chat', conv=c.id) }}">Open</a></div>{% endfor %}</div>
+</section>{% endblock %}

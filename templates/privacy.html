@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}Privacy — NutriEase{% endblock %}
+{% block body %}<section class="container narrow">
+<h1>Privacy</h1>
+<p>NutriEase stores your account, profile, plans, deficiency reports and chat history in a local SQLite database (<code>data/nutriease.sqlite</code>). Nothing is sent to any third party. Passwords are hashed with Werkzeug's PBKDF2 implementation.</p>
+</section>{% endblock %}

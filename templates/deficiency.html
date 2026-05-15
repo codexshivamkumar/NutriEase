@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block title %}Deficiency analyzer — NutriEase{% endblock %}
+{% block body %}
+<section class="container narrow">
+<h1>Deficiency analyzer</h1>
+<p class="muted">Describe your symptoms in plain language. We map them to likely vitamin / mineral gaps and food-first remedies.</p>
+<form method="post" class="card">
+  <label>Symptoms
+    <textarea name="symptoms" rows="4" placeholder="e.g. fatigue, brittle nails, leg cramps, bleeding gums">{{ report.symptoms if report else '' }}</textarea>
+  </label>
+  <button class="btn primary" type="submit">Analyze</button>
+</form>
+
+{% if report %}
+<div class="card">
+  <h2>Findings</h2>
+  {% for f in report.findings %}
+  <div class="finding">
+    <h3>{{ f.nutrient.title() }} <small class="muted">{{ f.confidence }}% match</small></h3>
+    {% if f.matched_symptoms %}<p><strong>Matched symptoms:</strong> {{ f.matched_symptoms|join(', ') }}</p>{% endif %}
+    <p><strong>Foods:</strong> {{ f.foods|join(', ') }}</p>
+    <p><strong>RDA:</strong> {{ f.rda }}</p>
+    <p class="muted">{{ f.tip }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+</section>{% endblock %}
