@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: NutriEase
+    env: python
+    repo: https://github.com/codexshivamkumar/NutriEase.git
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn "app:app" --bind 0.0.0.0:$PORT
